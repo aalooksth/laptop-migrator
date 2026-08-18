@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller / Build Artifacts
+build/
+dist/
+*.spec
+*.manifest
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Logs and databases
+*.log
+migration.log
+*.sqlite3
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local backup testing archives
+*.zip
+LaptopMigrationBackup/
+test_backups/

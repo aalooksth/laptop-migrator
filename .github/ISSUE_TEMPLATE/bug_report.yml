@@ -1,0 +1,45 @@
+name: 🐛 Bug Report
+description: Report an issue or unexpected behavior in Laptop Migration Hub
+title: "[BUG]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please provide as much detail as possible to help reproduce and fix the issue.
+
+  - type: input
+    id: os_version
+    attributes:
+      label: Windows OS Version
+      description: e.g., Windows 11 Pro 23H2 or Windows 10
+      placeholder: Windows 11 Pro 23H2
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: affected_components
+    attributes:
+      label: Affected Modules
+      options:
+        - label: IDEs (Antigravity AI / VS Code / Notepad++)
+        - label: Microsoft Office Customizations (Ribbon / Macros / Templates)
+        - label: Web Browsers (Chrome / Edge / Firefox)
+        - label: Windows System (Clocks / Wi-Fi / Winget)
+        - label: Developer Dotfiles (SSH / Git / Shell)
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what happened.
+      placeholder: When restoring Notepad++ unsaved tabs, ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: log_output
+    attributes:
+      label: Migration Log / Console Output
+      description: Paste any error messages from `migration.log` or the console drawer.
+      render: text

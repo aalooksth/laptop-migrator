@@ -1,0 +1,36 @@
+name: ✨ Feature / App Support Request
+description: Suggest a new software family, app configuration, or feature
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an application or Windows customization you'd like supported in Laptop Migration Hub? Let us know!
+
+  - type: input
+    id: app_name
+    attributes:
+      label: Software / Tool Name
+      description: e.g., JetBrains IntelliJ, DBeaver, Windows Terminal
+      placeholder: JetBrains IntelliJ IDEA
+    validations:
+      required: true
+
+  - type: textarea
+    id: config_details
+    attributes:
+      label: Configuration / Data Paths (if known)
+      description: Where does this application store its user settings, plugins, or unsaved files on Windows?
+      placeholder: AppData\Roaming\JetBrains\...
+    validations:
+      required: false
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case / Expected Behavior
+      description: Explain why backing up and restoring this application is beneficial.
+      placeholder: Preserving database connections, custom queries, and editor themes across laptops.
+    validations:
+      required: true
