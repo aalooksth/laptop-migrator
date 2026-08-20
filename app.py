@@ -1745,6 +1745,8 @@ def index():
                 <div class="matrix-card">
                     <div class="matrix-card-title"><span>🌐</span><span>System, Shell & Network</span></div>
                     <ul class="matrix-list">
+                        <li><span>🔹</span><span><b>Desktop Wallpaper</b>: Preserve active transcoded wallpaper image, background registry style configuration, and refresh system shell instantly.</span></li>
+                        <li><span>🔹</span><span><b>File Explorer settings</b>: Restore file visibility preferences (e.g., showing hidden files, file extensions, etc.) with real-time shell refresh.</span></li>
                         <li><span>🔹</span><span><b>Windows Multi-Timezones</b>: Additional clocks (e.g. AEST, CST) & international formatting registry settings.</span></li>
                         <li><span>🔹</span><span><b>Wi-Fi Network Profiles</b>: Saved wireless network passwords & netsh connection profiles.</span></li>
                         <li><span>🔹</span><span><b>Winget Manifest</b>: Automated export of all installed Windows software for 1-click batch reinstallation.</span></li>
@@ -2810,6 +2812,12 @@ if __name__ == "__main__":
     import time
 
     is_frozen = getattr(sys, 'frozen', False)
+
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
 
     parser = argparse.ArgumentParser(description="Laptop Migration Hub")
     parser.add_argument("--host", type=str, default="127.0.0.1", help="Host address to bind (default: 127.0.0.1)")

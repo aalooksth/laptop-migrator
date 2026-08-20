@@ -70,6 +70,8 @@ Crafted with ❤️ by **[Alok Shrestha](https://aloks.com.np)** &bull; 🌐 [al
 ### 4. 🌐 System Info
 
 - **Windows Settings**:
+  - `Desktop Wallpaper`: Active transcoded wallpaper image file and background registry style configuration (reloaded dynamically on restore).
+  - `File Explorer Settings`: Explorer options including showing hidden files and showing file extensions (refreshed dynamically on restore).
   - `Clock & Multi-Timezones`: Additional clocks (`HKCU\Control Panel\TimeDate\AdditionalClocks` e.g., AEST, CST), international formatting, and system timezone.
   - `Wi-Fi Network Profiles`: Saved Wi-Fi network keys and connection profiles (`netsh` WLAN).
   - `Winget Application Manifest/List`: Automated software inventory export and reinstallation manifest (`winget export`).
