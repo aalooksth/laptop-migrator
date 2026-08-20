@@ -26,7 +26,7 @@ from migrator.worker import (
 app = FastAPI(
     title="Laptop Migration Hub",
     description="Intelligent Windows configuration backup & restore utility",
-    version="2.5.0"
+    version="1.1.0"
 )
 
 # Static files directory
