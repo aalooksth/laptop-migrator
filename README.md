@@ -1,6 +1,7 @@
 # Laptop Migration Hub 💻
 
 [![Release](https://img.shields.io/github/v/release/aalooksth/laptop-migrator?color=0284c7&label=version)](https://github.com/aalooksth/laptop-migrator/releases)
+[![Downloads](https://img.shields.io/github/downloads/aalooksth/laptop-migrator/total?color=22c55e&label=downloads)](https://github.com/aalooksth/laptop-migrator/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078d4?logo=windows)](https://github.com/aalooksth/laptop-migrator)
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-3776ab?logo=python)](https://www.python.org)
@@ -130,9 +131,33 @@ Or download the pre-compiled `LaptopMigrator.exe` from GitHub Releases.
 
 ---
 
+## Version History
+ 
+### v1.2.0
+- **Feature Search & Filter**: Real-time instant search across all migration categories, modules, and sub-items with badge count indicator.
+- **Selected Only View**: Quick filter pill to toggle and review only selected components before initiating backup or restore.
+- **New Folder Creation**: Inline folder creation modal and destination input button to create custom backup directory paths without leaving the app.
+- **MV3 & uBlock Origin Lite Support**: Deep backup and restoration of Chrome Manifest V3 extension settings, including `Local Extension Settings`, `Extension Rules`, `Extension State`, and dynamic DNR rules (`ddkjiahejlhfcafbddmgiahcphecmpfh`).
+- **Single-Instance Enforcement**: Integrated named Win32 mutex lock preventing duplicate application instances from conflicting.
+- **Process Termination Safety**: Replaced aggressive process termination with gentle graceful termination and testing environment isolation.
+- **Automated Test Suite**: Added dedicated automated unit tests in `tests/test_migration.py` covering endpoints, providers, and UI capabilities.
+- **Authenticode Code-Signing & PE Metadata**: Added automated Windows PE version resource embedding and PowerShell code-signing script.
+
+### v1.1.0
+- **3-Tier Hierarchy Categorization**: Grouping by Category, Module, and Item.
+- **Dynamic Restore Inspection**: Auto-detection of backup archives and available items.
+- **Interactive Directory Browser**: Modal path browser with drive and shortcut navigation.
+- **Real-Time Log Console**: Embedded sliding console with status polling.
+
+---
+
 ## About the Author & Support
 
 - **Created by**: **Alok Shrestha**
 - **Website**: [https://aloks.com.np](https://aloks.com.np)
 - **Email**: [hello@aloks.com.np](mailto:hello@aloks.com.np)
 - **Feedback & Support**: For questions, suggestions, or issues, feel free to reach out via email or submit a GitHub issue.
+
+---
+
+Made with ❤️ in 🇳🇵 by Alok - hello@aloks.com.np

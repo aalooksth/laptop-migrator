@@ -10,6 +10,7 @@ Write-Host "`n[2/3] Compiling standalone executable..." -ForegroundColor Yellow
 pyinstaller --noconfirm --onefile `
     --name "LaptopMigrator" `
     --icon "favicon.ico" `
+    --version-file "file_version_info.txt" `
     --add-data "favicon.ico;." `
     --collect-all "uvicorn" `
     --collect-all "fastapi" `

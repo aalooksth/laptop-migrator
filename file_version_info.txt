@@ -1,0 +1,36 @@
+# UTF-8
+# Windows PE Version Resource for Laptop Migration Hub
+# Made with love in Nepal by Alok Shrestha - hello@aloks.com.np
+
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(1, 2, 0, 0),
+    prodvers=(1, 2, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+        StringTable(
+          '040904b0',
+          [
+            StringStruct('CompanyName', 'Alok Shrestha'),
+            StringStruct('FileDescription', 'Laptop Migration Hub'),
+            StringStruct('FileVersion', '1.2.0.0'),
+            StringStruct('InternalName', 'LaptopMigrator'),
+            StringStruct('LegalCopyright', 'Copyright (c) 2026 Alok Shrestha. Made with love in Nepal - hello@aloks.com.np'),
+            StringStruct('OriginalFilename', 'LaptopMigrator.exe'),
+            StringStruct('ProductName', 'Laptop Migration Hub'),
+            StringStruct('ProductVersion', '1.2.0.0')
+          ]
+        )
+      ]
+    ),
+    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+  ]
+)

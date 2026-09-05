@@ -34,6 +34,7 @@ jobs:
           pyinstaller --noconfirm --onefile --windowed `
             --name "LaptopMigrator" `
             --icon "favicon.ico" `
+            --version-file "file_version_info.txt" `
             --add-data "favicon.ico;." `
             --collect-all "uvicorn" `
             --collect-all "fastapi" `

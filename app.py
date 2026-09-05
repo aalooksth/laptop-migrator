@@ -22,11 +22,12 @@ from migrator.worker import (
     execute_backup,
     execute_restore,
 )
+from version import __version__
 
 app = FastAPI(
     title="Laptop Migration Hub",
     description="Intelligent Windows configuration backup & restore utility",
-    version="1.1.0"
+    version=__version__
 )
 
 # Static files directory
@@ -996,6 +997,176 @@ def index():
             border-color: var(--border-accent);
         }
 
+        /* Search & Filter Controls Toolbar */
+        .filter-search-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 240px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input-icon {
+            position: absolute;
+            left: 0.75rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .feature-search-input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.45rem 2rem 0.45rem 2.2rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .feature-search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .search-clear-btn {
+            position: absolute;
+            right: 0.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 0.2rem 0.35rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .search-clear-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-pills-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-toggle-pill {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.42rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .filter-toggle-pill:hover {
+            border-color: var(--border-accent);
+            color: var(--text-primary);
+        }
+
+        .filter-toggle-pill.active {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
+
+        body.mode-restore .filter-toggle-pill.active {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: var(--accent-restore);
+            color: var(--accent-restore);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+        }
+
+        .pill-counter {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.08rem 0.4rem;
+            border-radius: 10px;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-primary);
+        }
+
+        .search-matches-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            background: var(--badge-detect-bg);
+            border: 1px solid var(--badge-detect-border);
+            padding: 0.25rem 0.55rem;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+        }
+
+        /* Inline New Folder Bar in Browser Modal */
+        .new-folder-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-accent);
+            padding: 0.45rem 0.65rem;
+            border-radius: var(--radius-sm);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .new-folder-input {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.35rem 0.6rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .new-folder-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .empty-filter-state {
+            padding: 2rem;
+            text-align: center;
+            background: rgba(148, 163, 184, 0.04);
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+
         /* --- 3-Tier Hierarchy: Software Family Categories --- */
         .software-family-section {
             margin-bottom: 1.25rem;
@@ -1646,6 +1817,7 @@ def index():
                     <div class="path-input-wrapper">
                         <input type="text" id="backupPathInput" class="path-input" placeholder="e.g. D:\\OneDrive\\LaptopMigrationBackup" onchange="inspectCurrentPath()">
                         <button class="btn-outline" onclick="openFolderBrowser()">📁 Browse Folders</button>
+                        <button class="btn-outline" onclick="promptCreateNewFolder()" title="Create a new folder in this location to avoid cluttering existing files">➕ New Folder</button>
                         <button class="btn-outline" onclick="resetDefaultPath()">🔄 Reset Path</button>
                     </div>
                 </div>
@@ -1660,6 +1832,23 @@ def index():
                         <button class="filter-btn" onclick="selectAll(false)">Deselect All</button>
                         <button class="filter-btn" id="btnNonAdmin" onclick="selectNonAdminOnly()">🛡️ Non-Admin Only</button>
                         <button class="filter-btn" onclick="resetAllToDefaults()" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-primary);">🔄 Reset All</button>
+                    </div>
+                </div>
+
+                <!-- Real-time Feature Search & Selected-Only Filter Toolbar -->
+                <div class="filter-search-toolbar">
+                    <div class="search-input-wrapper">
+                        <span class="search-input-icon">🔍</span>
+                        <input type="text" id="featureSearchInput" class="feature-search-input" placeholder="Search features, apps, or descriptions (e.g. Chrome, uBlock, SSH, Clocks)..." oninput="applyFeatureFilters()">
+                        <button class="search-clear-btn" id="searchClearBtn" onclick="clearFeatureSearch()" title="Clear search" style="display: none;">✕</button>
+                    </div>
+                    <div class="filter-pills-group">
+                        <button class="filter-toggle-pill" id="btnShowSelectedOnly" onclick="toggleShowSelectedOnly()" title="Toggle display to show only selected components">
+                            <span id="pillCheckIcon">⬜</span>
+                            <span>Selected Only</span>
+                            <span class="pill-counter" id="selectedCountBadge">0</span>
+                        </button>
+                        <span id="searchMatchesBadge" class="search-matches-badge" style="display: none;">0 matches</span>
                     </div>
                 </div>
 
@@ -1854,8 +2043,16 @@ def index():
             <div class="modal-body">
                 <div class="browser-shortcuts" id="browserShortcuts"></div>
                 <div class="current-nav-path">
-                    <span style="color: var(--accent-primary);">Path:</span>
-                    <span id="browserCurrentPath">...</span>
+                    <span style="color: var(--accent-primary); font-weight: 700;">Path:</span>
+                    <span id="browserCurrentPath" style="flex: 1;">...</span>
+                    <button class="btn-outline" style="padding: 0.2rem 0.6rem; font-size: 0.74rem;" onclick="toggleNewFolderInput()">➕ New Folder</button>
+                </div>
+                <!-- Inline New Folder Bar -->
+                <div id="newFolderInlineBar" class="new-folder-bar" style="display: none;">
+                    <span style="font-size: 0.85rem;">📁</span>
+                    <input type="text" id="newFolderNameInput" class="new-folder-input" placeholder="New folder name (e.g. MigrationBackup_2026)..." onkeydown="if(event.key==='Enter') createNewFolderSubmit(); else if(event.key==='Escape') toggleNewFolderInput(false);">
+                    <button class="btn-action btn-backup" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;" onclick="createNewFolderSubmit()">Create</button>
+                    <button class="btn-outline" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" onclick="toggleNewFolderInput(false)">Cancel</button>
                 </div>
                 <div class="folders-list" id="browserFoldersList">
                     <div style="padding: 0.75rem; color: var(--text-muted);">Loading directories...</div>
@@ -1912,7 +2109,7 @@ def index():
                 </div>
 
                 <div style="font-size: 0.76rem; color: var(--text-muted); line-height: 1.4;">
-                    For assistance, questions, or issues, contact <strong>Alok</strong>: <a href="mailto:hello@aloks.com.np" style="color: var(--accent-primary); text-decoration: underline; font-weight: 600;">hello@aloks.com.np</a>
+                    Made with ❤️ in 🇳🇵 by <strong>Alok</strong>: <a href="mailto:hello@aloks.com.np" style="color: var(--accent-primary); text-decoration: underline; font-weight: 600;">hello@aloks.com.np</a>
                 </div>
             </div>
             <div class="modal-footer" style="display: flex; justify-content: flex-end;">
@@ -1952,7 +2149,7 @@ def index():
                     </ul>
                 </div>
                 <div style="font-size: 0.76rem; color: var(--text-muted); line-height: 1.4;">
-                    For assistance, questions, or issues, contact <strong>Alok</strong>: <a href="mailto:hello@aloks.com.np" style="color: var(--accent-primary); text-decoration: underline; font-weight: 600;">hello@aloks.com.np</a>
+                    Made with ❤️ in 🇳🇵 by <strong>Alok</strong>: <a href="mailto:hello@aloks.com.np" style="color: var(--accent-primary); text-decoration: underline; font-weight: 600;">hello@aloks.com.np</a>
                 </div>
             </div>
             <div class="modal-footer" style="display: flex; justify-content: flex-end;">
@@ -2182,6 +2379,7 @@ def index():
             hasShownCompletionModal = false;
             document.getElementById('topProgressBanner').style.display = 'none';
             clearLogs();
+            clearAllFilters();
             fetch('./api/status/reset', { method: 'POST' }).catch(() => {});
             inspectCurrentPath();
         }
@@ -2334,12 +2532,158 @@ def index():
             }
 
             document.getElementById('groupsContainer').innerHTML = html;
+            applyFeatureFilters();
+        }
+
+        let isSelectedOnlyActive = false;
+
+        function toggleShowSelectedOnly() {
+            isSelectedOnlyActive = !isSelectedOnlyActive;
+            const btn = document.getElementById('btnShowSelectedOnly');
+            const icon = document.getElementById('pillCheckIcon');
+            if (btn) {
+                if (isSelectedOnlyActive) {
+                    btn.classList.add('active');
+                    if (icon) icon.innerText = '☑️';
+                } else {
+                    btn.classList.remove('active');
+                    if (icon) icon.innerText = '⬜';
+                }
+            }
+            applyFeatureFilters();
+        }
+
+        function clearFeatureSearch() {
+            const input = document.getElementById('featureSearchInput');
+            if (input) {
+                input.value = '';
+            }
+            applyFeatureFilters();
+        }
+
+        function clearAllFilters() {
+            clearFeatureSearch();
+            if (isSelectedOnlyActive) {
+                toggleShowSelectedOnly();
+            }
+        }
+
+        function updateSelectedCountBadge() {
+            let selectedCount = 0;
+            let totalCount = 0;
+            if (SYSTEM_INFO && SYSTEM_INFO.groups) {
+                SYSTEM_INFO.groups.forEach(g => {
+                    g.sub_items.forEach(item => {
+                        totalCount++;
+                        const chk = document.getElementById(`chk_${item.id}`);
+                        if (chk && chk.checked) selectedCount++;
+                    });
+                });
+            }
+            const badge = document.getElementById('selectedCountBadge');
+            if (badge) {
+                badge.innerText = `${selectedCount} / ${totalCount}`;
+            }
+        }
+
+        function applyFeatureFilters() {
+            const searchInput = document.getElementById('featureSearchInput');
+            const clearBtn = document.getElementById('searchClearBtn');
+            const matchesBadge = document.getElementById('searchMatchesBadge');
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+            if (clearBtn) {
+                clearBtn.style.display = query ? 'flex' : 'none';
+            }
+
+            updateSelectedCountBadge();
+
+            if (!SYSTEM_INFO || !SYSTEM_INFO.groups) return;
+
+            let totalVisibleItems = 0;
+            const familySections = document.querySelectorAll('.software-family-section');
+
+            SYSTEM_INFO.groups.forEach(g => {
+                const cardElem = document.getElementById(`app_group_${g.id}`);
+                if (!cardElem) return;
+
+                let visibleSubItemsInGroup = 0;
+                const groupMatches = g.name.toLowerCase().includes(query) || 
+                                     (g.software_family && g.software_family.toLowerCase().includes(query));
+
+                g.sub_items.forEach(item => {
+                    const rowElem = document.getElementById(`row_${item.id}`);
+                    const chk = document.getElementById(`chk_${item.id}`);
+                    const isChecked = chk ? chk.checked : false;
+
+                    if (isSelectedOnlyActive && !isChecked) {
+                        if (rowElem) rowElem.style.display = 'none';
+                        return;
+                    }
+
+                    const itemMatches = groupMatches ||
+                                        item.name.toLowerCase().includes(query) ||
+                                        (item.description && item.description.toLowerCase().includes(query)) ||
+                                        (item.category && item.category.toLowerCase().includes(query));
+
+                    if (!query || itemMatches) {
+                        if (rowElem) rowElem.style.display = 'flex';
+                        visibleSubItemsInGroup++;
+                        totalVisibleItems++;
+                    } else {
+                        if (rowElem) rowElem.style.display = 'none';
+                    }
+                });
+
+                if (visibleSubItemsInGroup > 0) {
+                    cardElem.style.display = 'flex';
+                } else {
+                    cardElem.style.display = 'none';
+                }
+            });
+
+            familySections.forEach(section => {
+                const visibleCards = section.querySelectorAll('.app-card:not([style*="display: none"])');
+                section.style.display = (visibleCards.length > 0) ? 'flex' : 'none';
+            });
+
+            if (matchesBadge) {
+                if (query || isSelectedOnlyActive) {
+                    matchesBadge.style.display = 'inline-block';
+                    matchesBadge.innerText = `${totalVisibleItems} matching feature(s)`;
+                } else {
+                    matchesBadge.style.display = 'none';
+                }
+            }
+
+            let emptyState = document.getElementById('emptySearchFilterState');
+            if (totalVisibleItems === 0 && (query || isSelectedOnlyActive)) {
+                if (!emptyState) {
+                    emptyState = document.createElement('div');
+                    emptyState.id = 'emptySearchFilterState';
+                    emptyState.className = 'empty-filter-state';
+                    const container = document.getElementById('groupsContainer');
+                    if (container) container.appendChild(emptyState);
+                }
+                emptyState.style.display = 'flex';
+                emptyState.innerHTML = `
+                    <div style="font-size: 1.6rem;">🔍</div>
+                    <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">No Features Match Filter</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); max-width: 420px; line-height: 1.4;">
+                        No modules match ${query ? `search query "<b>${query}</b>"` : ''} ${query && isSelectedOnlyActive ? 'with' : ''} ${isSelectedOnlyActive ? '<b>Selected Only</b> enabled' : ''}.
+                    </div>
+                    <button class="filter-btn" onclick="clearAllFilters()" style="margin-top: 0.4rem; padding: 0.4rem 0.85rem; border-color: var(--accent-primary); color: var(--accent-primary);">Reset Filters</button>
+                `;
+            } else if (emptyState) {
+                emptyState.style.display = 'none';
+            }
         }
 
         function handleSubCheckboxChange(id) {
             const chk = document.getElementById(`chk_${id}`);
             updateSubItemStyle(id, chk.checked);
             saveFormState();
+            applyFeatureFilters();
         }
 
         function toggleSubItem(id, event) {
@@ -2349,6 +2693,7 @@ def index():
                 chk.checked = !chk.checked;
                 updateSubItemStyle(id, chk.checked);
                 saveFormState();
+                applyFeatureFilters();
             }
         }
 
@@ -2367,6 +2712,7 @@ def index():
                 updateSubItemStyle(id, check);
             });
             saveFormState();
+            applyFeatureFilters();
         }
 
         // --- Filter Selections ---
@@ -2377,6 +2723,7 @@ def index():
                 updateSubItemStyle(id, checked);
             });
             saveFormState();
+            applyFeatureFilters();
         }
 
         function selectNonAdminOnly() {
@@ -2392,6 +2739,7 @@ def index():
                 });
             });
             saveFormState();
+            applyFeatureFilters();
         }
 
         // --- Drawer Controls ---
@@ -2434,7 +2782,114 @@ def index():
         }
 
         function closeFolderBrowser() {
+            toggleNewFolderInput(false);
             document.getElementById('folderBrowserModal').style.display = 'none';
+        }
+
+        function toggleNewFolderInput(show) {
+            const bar = document.getElementById('newFolderInlineBar');
+            const input = document.getElementById('newFolderNameInput');
+            if (bar) {
+                const shouldShow = (show !== undefined) ? show : (bar.style.display === 'none');
+                bar.style.display = shouldShow ? 'flex' : 'none';
+                if (shouldShow && input) {
+                    const today = new Date().toISOString().slice(0, 10);
+                    input.value = `MigrationBackup_${today}`;
+                    input.focus();
+                    input.select();
+                }
+            }
+        }
+
+        async function createNewFolderSubmit() {
+            const input = document.getElementById('newFolderNameInput');
+            if (!input) return;
+            const name = input.value.trim();
+            if (!name) {
+                alert('Please enter a folder name.');
+                return;
+            }
+            if (/[/\\\\:*?"<>|]/.test(name)) {
+                alert('Folder name contains invalid characters: \\\\ / : * ? " < > |');
+                return;
+            }
+
+            const parent = currentBrowserNavPath || '';
+            if (!parent) {
+                alert('Please navigate to a drive or directory first.');
+                return;
+            }
+
+            const fullPath = parent.endsWith('\\\\') ? parent + name : parent + '\\\\' + name;
+            try {
+                const res = await fetch('./api/browse/mkdir', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: fullPath })
+                });
+                if (!res.ok) {
+                    const errData = await res.json();
+                    alert(`Failed to create folder: ${errData.detail || res.statusText}`);
+                    return;
+                }
+                toggleNewFolderInput(false);
+                await loadBrowserPath(fullPath);
+                document.getElementById('backupPathInput').value = fullPath;
+                saveFormState();
+                inspectCurrentPath();
+            } catch (e) {
+                alert(`Error creating folder: ${e.message}`);
+            }
+        }
+
+        async function promptCreateNewFolder() {
+            const currentVal = document.getElementById('backupPathInput').value.trim();
+            const today = new Date().toISOString().slice(0, 10);
+            const defaultName = `MigrationBackup_${today}`;
+            
+            if (!currentVal) {
+                openFolderBrowser();
+                setTimeout(() => toggleNewFolderInput(true), 300);
+                return;
+            }
+
+            const folderName = prompt(`Create a new subfolder in:\\n${currentVal}\\n\\nEnter folder name:`, defaultName);
+            if (!folderName || !folderName.trim()) return;
+            
+            const cleanName = folderName.trim();
+            if (/[/\\\\:*?"<>|]/.test(cleanName)) {
+                alert('Folder name contains invalid characters: \\\\ / : * ? " < > |');
+                return;
+            }
+
+            const fullPath = currentVal.endsWith('\\\\') ? currentVal + cleanName : currentVal + '\\\\' + cleanName;
+            try {
+                const res = await fetch('./api/browse/mkdir', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: fullPath })
+                });
+                if (!res.ok) {
+                    const errData = await res.json();
+                    alert(`Failed to create folder: ${errData.detail || res.statusText}`);
+                    return;
+                }
+                document.getElementById('backupPathInput').value = fullPath;
+                saveFormState();
+                inspectCurrentPath();
+                alert(`Successfully created new folder:\\n${fullPath}`);
+            } catch (e) {
+                alert(`Error creating folder: ${e.message}`);
+            }
+        }
+
+        function selectBrowserPath() {
+            if (currentBrowserNavPath) {
+                document.getElementById('backupPathInput').value = currentBrowserNavPath;
+                saveFormState();
+                inspectCurrentPath();
+            }
+            closeFolderBrowser();
         }
 
         async function loadBrowserPath(path) {
@@ -2818,6 +3273,18 @@ if __name__ == "__main__":
             sys.stdout.reconfigure(encoding="utf-8")
         except Exception:
             pass
+
+    # Single-instance enforcement via Win32 named mutex
+    if sys.platform == "win32":
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        MUTEX_NAME = "Global\\LaptopMigrationHub_SingleInstance_Mutex"
+        ERROR_ALREADY_EXISTS = 183
+        single_instance_mutex = kernel32.CreateMutexW(None, False, MUTEX_NAME)
+        if kernel32.GetLastError() == ERROR_ALREADY_EXISTS:
+            print("\n[WARNING] Another instance of Laptop Migration Hub is already active.")
+            print("[INFO] Cleanly exiting duplicate process.\n")
+            sys.exit(0)
 
     parser = argparse.ArgumentParser(description="Laptop Migration Hub")
     parser.add_argument("--host", type=str, default="127.0.0.1", help="Host address to bind (default: 127.0.0.1)")

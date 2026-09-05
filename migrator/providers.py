@@ -2,13 +2,12 @@ import os
 import shutil
 import stat
 import subprocess
-import datetime
 import json
 import winreg
 import ctypes
 from pathlib import Path
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 # central metadata mapping group ID to human-readable info
 GROUP_METADATA = {
@@ -100,6 +99,19 @@ def robust_copytree(src: Path, dest: Path):
             if f.endswith(('.tmp', '.lock', '.sock', '.pid', '.ldb.lock')):
                 continue
             robust_copy_file(Path(root) / f, target_dir / f)
+
+def safe_terminate_process(image_name: str, log_fn: Optional[Callable[[str], None]] = None):
+    """Safely terminate a running process during restore if running, bypassing during tests."""
+    if os.environ.get("MIGRATOR_TESTING") == "1":
+        return
+    try:
+        check = subprocess.run(f'tasklist /FI "IMAGENAME eq {image_name}"', shell=True, capture_output=True, text=True)
+        if image_name.lower() in check.stdout.lower():
+            if log_fn:
+                log_fn(f"Closing active {image_name} tasks to release file locks...")
+            subprocess.run(f"taskkill /IM {image_name} /T", shell=True, capture_output=True)
+    except Exception:
+        pass
 
 def get_antigravity_roaming_path() -> Optional[Path]:
     appdata = Path(os.environ.get("APPDATA", ""))
@@ -1289,14 +1301,23 @@ class ChromeExtensionsProvider(BaseProvider):
         localappdata = Path(os.environ.get("LOCALAPPDATA", ""))
         chrome_src = localappdata / "Google" / "Chrome" / "User Data"
         if chrome_src.exists():
+            ext_targets = [
+                "Local Extension Settings",
+                "Sync Extension Settings",
+                "DNR Extension Rules",
+                "Extension Rules",
+                "Extension State",
+                "Managed Extension Settings",
+            ]
             for prof in chrome_src.iterdir():
                 if prof.is_dir() and (prof.name == "Default" or prof.name.startswith("Profile ")):
                     target = backup_root / "Chrome" / prof.name
                     if (prof / "Preferences").exists():
                         robust_copy_file(prof / "Preferences", target / "Preferences")
-                    for ext in ["Local Extension Settings", "Sync Extension Settings"]:
+                    for ext in ext_targets:
                         if (prof / ext).exists():
                             robust_copytree(prof / ext, target / ext)
+
             log_fn("  -> Saved Chrome session extensions and settings preferences.")
             return True
         log_fn("  -> Chrome installation data not found.")
@@ -1306,13 +1327,20 @@ class ChromeExtensionsProvider(BaseProvider):
         localappdata = Path(os.environ.get("LOCALAPPDATA", ""))
         chrome_src = backup_root / "Chrome"
         if chrome_src.exists():
-            log_fn("Terminating active Google Chrome tasks...")
-            subprocess.run("taskkill /F /IM chrome.exe /T", shell=True, capture_output=True)
+            safe_terminate_process("chrome.exe", log_fn)
+            ext_targets = [
+                "Local Extension Settings",
+                "Sync Extension Settings",
+                "DNR Extension Rules",
+                "Extension Rules",
+                "Extension State",
+                "Managed Extension Settings",
+            ]
             for prof in chrome_src.iterdir():
                 target = localappdata / "Google" / "Chrome" / "User Data" / prof.name
                 if (prof / "Preferences").exists():
                     robust_copy_file(prof / "Preferences", target / "Preferences")
-                for ext in ["Local Extension Settings", "Sync Extension Settings"]:
+                for ext in ext_targets:
                     if (prof / ext).exists():
                         robust_copytree(prof / ext, target / ext)
             log_fn("  -> Restored Chrome settings data.")
@@ -1395,12 +1423,20 @@ class EdgeExtensionsProvider(BaseProvider):
         localappdata = Path(os.environ.get("LOCALAPPDATA", ""))
         edge_src = localappdata / "Microsoft" / "Edge" / "User Data"
         if edge_src.exists():
+            ext_targets = [
+                "Local Extension Settings",
+                "Sync Extension Settings",
+                "DNR Extension Rules",
+                "Extension Rules",
+                "Extension State",
+                "Managed Extension Settings",
+            ]
             for prof in edge_src.iterdir():
                 if prof.is_dir() and (prof.name == "Default" or prof.name.startswith("Profile ")):
                     target = backup_root / "Edge" / prof.name
                     if (prof / "Preferences").exists():
                         robust_copy_file(prof / "Preferences", target / "Preferences")
-                    for ext in ["Local Extension Settings", "Sync Extension Settings"]:
+                    for ext in ext_targets:
                         if (prof / ext).exists():
                             robust_copytree(prof / ext, target / ext)
             log_fn("  -> Saved Microsoft Edge settings preferences and plugins.")
@@ -1412,13 +1448,20 @@ class EdgeExtensionsProvider(BaseProvider):
         localappdata = Path(os.environ.get("LOCALAPPDATA", ""))
         edge_src = backup_root / "Edge"
         if edge_src.exists():
-            log_fn("Terminating active Microsoft Edge tasks...")
-            subprocess.run("taskkill /F /IM msedge.exe /T", shell=True, capture_output=True)
+            safe_terminate_process("msedge.exe", log_fn)
+            ext_targets = [
+                "Local Extension Settings",
+                "Sync Extension Settings",
+                "DNR Extension Rules",
+                "Extension Rules",
+                "Extension State",
+                "Managed Extension Settings",
+            ]
             for prof in edge_src.iterdir():
                 target = localappdata / "Microsoft" / "Edge" / "User Data" / prof.name
                 if (prof / "Preferences").exists():
                     robust_copy_file(prof / "Preferences", target / "Preferences")
-                for ext in ["Local Extension Settings", "Sync Extension Settings"]:
+                for ext in ext_targets:
                     if (prof / ext).exists():
                         robust_copytree(prof / ext, target / ext)
             log_fn("  -> Restored Edge plugin settings data.")
@@ -1537,8 +1580,7 @@ class FirefoxProfilesProvider(BaseProvider):
         appdata = Path(os.environ.get("APPDATA", ""))
         ff_src = backup_root / "Firefox"
         if ff_src.exists():
-            log_fn("Terminating active Mozilla Firefox tasks...")
-            subprocess.run("taskkill /F /IM firefox.exe /T", shell=True, capture_output=True)
+            safe_terminate_process("firefox.exe", log_fn)
             for prof in ff_src.iterdir():
                 target = appdata / "Mozilla" / "Firefox" / "Profiles" / prof.name
                 target.mkdir(parents=True, exist_ok=True)
@@ -1596,10 +1638,9 @@ class OfficeRibbonProvider(BaseProvider):
         localappdata = Path(os.environ.get("LOCALAPPDATA", ""))
         ui_src = backup_root / "Office" / "UI"
         if ui_src.exists():
-            log_fn("Closing Excel, Word, and PowerPoint before restoring UI customization...")
-            subprocess.run("taskkill /F /IM excel.exe /T", shell=True, capture_output=True)
-            subprocess.run("taskkill /F /IM winword.exe /T", shell=True, capture_output=True)
-            subprocess.run("taskkill /F /IM powerpnt.exe /T", shell=True, capture_output=True)
+            safe_terminate_process("excel.exe", log_fn)
+            safe_terminate_process("winword.exe", log_fn)
+            safe_terminate_process("powerpnt.exe", log_fn)
             
             dest = localappdata / "Microsoft" / "Office"
             dest.mkdir(parents=True, exist_ok=True)

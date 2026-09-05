@@ -1,9 +1,8 @@
 import datetime
 import inspect
 import os
-import subprocess
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Dict, Optional
 from migrator.config import (
     ProgressStatus,
     ItemProgressState,
